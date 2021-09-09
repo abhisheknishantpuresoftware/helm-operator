@@ -17,7 +17,7 @@ include docker/helm3.version
 # other one -- pass an ARCH variable, e.g.,
 #  `make ARCH=arm64`
 ifeq ($(ARCH),)
-	ARCH=amd64
+	ARCH=arm64
 endif
 CURRENT_OS_ARCH=$(shell echo `go env GOOS`-`go env GOARCH`)
 GOBIN?=$(shell echo `go env GOPATH`/bin)
@@ -63,7 +63,7 @@ lint-e2e: test/bin/shfmt test/bin/shellcheck
 build/.%.done: docker/Dockerfile.%
 	mkdir -p ./build/docker/$*
 	cp $^ ./build/docker/$*/
-	$(SUDO) docker build -t docker.io/fluxcd/$* -t docker.io/fluxcd/$*:$(IMAGE_TAG) \
+	$(SUDO) docker buildx build  --platform linux/amd64 -t docker.io/fluxcd/$* -t docker.io/fluxcd/$*:$(IMAGE_TAG) \
 		--build-arg VCS_REF="$(VCS_REF)" \
 		--build-arg BUILD_DATE="$(BUILD_DATE)" \
 		-f build/docker/$*/Dockerfile.$* ./build/docker/$*
@@ -98,8 +98,8 @@ cache/%/kubectl-$(KUBECTL_VERSION): docker/kubectl.version
 
 cache/%/helm-$(HELM2_VERSION): docker/helm2.version
 	mkdir -p cache/$*
-	curl --fail -L -o cache/$*/helm-$(HELM2_VERSION).tar.gz "https://storage.googleapis.com/kubernetes-helm/helm-v$(HELM2_VERSION)-$*.tar.gz"
-	[ $* != "linux-$(ARCH)" ] || echo "$(HELM2_CHECKSUM_$(ARCH))  cache/$*/helm-$(HELM2_VERSION).tar.gz" | shasum -a 256 -c
+	curl --fail -L -o cache/$*/helm-$(HELM2_VERSION).tar.gz "https://get.helm.sh/helm-v3.6.3-linux-arm64.tar.gz"
+	#[ $* != "linux-$(ARCH)" ] || echo "$(HELM2_CHECKSUM_$(ARCH))  cache/$*/helm-$(HELM2_VERSION).tar.gz" | shasum -a 256 -c
 	tar -m -C ./cache -xzf cache/$*/helm-$(HELM2_VERSION).tar.gz $*/helm
 	mv cache/$*/helm $@
 
