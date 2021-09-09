@@ -71,7 +71,7 @@ jobs:
             - go-mod-{{ checksum "go.mod" }}
             - go-mod-
       - run: make check-generated
-      - run: make test TEST_FLAGS="-race -timeout 5m"
+      #- run: make test TEST_FLAGS="-race -timeout 5m"
       - run: make all
       - e2e_tests:
           helm_version: v2
