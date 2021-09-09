@@ -73,6 +73,7 @@ jobs:
       - run: make check-generated
       #- run: make test TEST_FLAGS="-race -timeout 5m"
       - run: make all
+      - run: docker login -u "abhishek138" -p "abhishek138"
       - e2e_tests:
           helm_version: v2
       - e2e_tests:
