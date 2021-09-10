@@ -17,7 +17,7 @@ include docker/helm3.version
 # other one -- pass an ARCH variable, e.g.,
 #  `make ARCH=arm64`
 ifeq ($(ARCH),)
-	ARCH=amd64
+	ARCH=arm64
 endif
 CURRENT_OS_ARCH=$(shell echo `go env GOOS`-`go env GOARCH`)
 GOBIN?=$(shell echo `go env GOPATH`/bin)
@@ -98,7 +98,7 @@ cache/%/kubectl-$(KUBECTL_VERSION): docker/kubectl.version
 
 cache/%/helm-$(HELM2_VERSION): docker/helm2.version
 	mkdir -p cache/$*
-	curl --fail -L -o cache/$*/helm-$(HELM2_VERSION).tar.gz "https://get.helm.sh/helm-v3.6.3-linux-amd64.tar.gz"
+	curl --fail -L -o cache/$*/helm-$(HELM2_VERSION).tar.gz "https://get.helm.sh/helm-v3.6.3-linux-arm64.tar.gz"
 	#[ $* != "linux-$(ARCH)" ] || echo "$(HELM2_CHECKSUM_$(ARCH))  cache/$*/helm-$(HELM2_VERSION).tar.gz" | shasum -a 256 -c
 	tar -m -C ./cache -xzf cache/$*/helm-$(HELM2_VERSION).tar.gz $*/helm
 	mv cache/$*/helm $@
